@@ -96,5 +96,34 @@ describe("Catalogue", () => {
         expect(rejectedProduct).to.be.undefined; 
       });
     });
+    describe("search", () => {
+      beforeEach(function () {
+        batch = {
+          type: 'search',
+          products: [
+            new Product("C121", "shoes", 100, 10, 22.0),
+            new Product("C122", "shoulder bag", 100, 10, 24.0),
+          ],
+        };
+        const result = cat.batchAddProducts(batch);
+      });
+      it("should return products cheaper than €25.01", () => {
+      const result = cat.conditionalSearch({ price: 25.00})
+      expect(result.productIds).to.have.lengthOf(5);
+      expect(result.productIds).to.have.members(["A123", "A124", "A125", "C121", "C122"]);     
+      
+});
+it("should return products with 'sho' in the name", () => {
+const result = cat.conditionalSearch({ keyword: 'sho' })
+expect(result.productIds).to.have.lengthOf(2);
+expect(result.productIds).to.have.members(["C121", "C122"]);
+
+});
+it("should throw with the message 'Bad search' when the creturn products have neither key", () => {
+  expect(() => cat.conditionalSearch({keyword: "Widget"})).to.throw("Bad Search");
+});
+});
+
+
     });
 

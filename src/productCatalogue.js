@@ -49,5 +49,39 @@ class Catalogue {
       .reduce((acc, p) => acc + 1, 0);
     return noProductsAdded;
   }
+  batchSearchProducts(batch) {
+    const productIDClash = batch.products.some(
+      (product) => this.findProductById(product.id) !== undefined
+    );
+    if (productIDClash) {
+      throw new Error("Bad Batch");
+    }
+    const noProductsAdded = batch.products
+      .filter((product) => product.quantityInStock > 0 )
+      .filter((p) => {
+        this.addProduct(p);
+        return true;
+      })
+      
+  }
+  conditionalSearch(ans){
+    const result = { type: "conditionalSearch", productIds: [] };
+    if (ans.price){
+    result.productIds = this.products
+      .filter((p) => p.price <= ans.price)
+      .map((p) => p.id);
+      return result;
+  }
+    if (ans.keyword){
+    result.productIds = this.products
+      .filter((p) => p.name.search(ans.keyword)>=0)
+      .map((p) => p.id);
+      
+       if(result.productIds.length===0) {
+        throw new Error("Bad Search");
+}
+return result;
+    }
+}
 }
 module.exports = Catalogue;
